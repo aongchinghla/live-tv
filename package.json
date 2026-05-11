@@ -1,0 +1,28 @@
+{
+  "name": "single-page-live-tv",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "parse:m3u": "node scripts/parse-m3u.js"
+  },
+  "dependencies": {
+    "@tailwindcss/postcss": "latest",
+    "dashjs": "^5.1.1",
+    "hls.js": "latest",
+    "lucide-react": "latest",
+    "next": "^16.2.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "tailwindcss": "latest",
+    "typescript": "latest"
+  }
+}
