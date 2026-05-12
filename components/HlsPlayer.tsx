@@ -57,11 +57,17 @@ export default function HlsPlayer({ src, title }: HlsPlayerProps) {
           ? [src, proxyUrl]
           : [src];
     let attemptIndex = 0;
+    let attemptTimeoutId: number | null = null;
 
     setStatus("loading");
     setMessage("Loading stream...");
 
     const markReady = () => {
+      if (attemptTimeoutId) {
+        window.clearTimeout(attemptTimeoutId);
+        attemptTimeoutId = null;
+      }
+
       if (!cancelled) {
         setStatus("ready");
         setMessage("Loading stream...");
@@ -79,6 +85,11 @@ export default function HlsPlayer({ src, title }: HlsPlayerProps) {
     };
 
     const cleanupPlayback = () => {
+      if (attemptTimeoutId) {
+        window.clearTimeout(attemptTimeoutId);
+        attemptTimeoutId = null;
+      }
+
       video.pause();
       video.removeAttribute("src");
       video.load();
@@ -111,7 +122,10 @@ export default function HlsPlayer({ src, title }: HlsPlayerProps) {
       retryOrFail();
     };
 
-    video.addEventListener("loadedmetadata", markReady);
+    const readyEvents: Array<keyof HTMLMediaElementEventMap> = ["loadedmetadata", "loadeddata", "canplay", "playing"];
+    for (const eventName of readyEvents) {
+      video.addEventListener(eventName, markReady);
+    }
     video.addEventListener("error", handleNativeError);
 
     const loadDashModule = async (): Promise<DashModule> => {
@@ -122,6 +136,10 @@ export default function HlsPlayer({ src, title }: HlsPlayerProps) {
     };
 
     const startPlayback = (playbackUrl: string) => {
+      attemptTimeoutId = window.setTimeout(() => {
+        retryOrFail("This stream is taking too long to start. It may be blocked, offline, or incompatible with the current browser.");
+      }, 12000);
+
       if (streamType === "dash") {
         void loadDashModule()
           .then((dashjs) => {
@@ -153,12 +171,14 @@ export default function HlsPlayer({ src, title }: HlsPlayerProps) {
 
       if (streamType === "direct") {
         video.src = playbackUrl;
+        video.load();
         video.play().catch(() => undefined);
         return;
       }
 
       if (video.canPlayType("application/vnd.apple.mpegurl")) {
         video.src = playbackUrl;
+        video.load();
         video.play().catch(() => undefined);
         return;
       }
@@ -204,7 +224,9 @@ export default function HlsPlayer({ src, title }: HlsPlayerProps) {
 
     return () => {
       cancelled = true;
-      video.removeEventListener("loadedmetadata", markReady);
+      for (const eventName of readyEvents) {
+        video.removeEventListener(eventName, markReady);
+      }
       video.removeEventListener("error", handleNativeError);
       cleanupPlayback();
     };
@@ -223,7 +245,7 @@ export default function HlsPlayer({ src, title }: HlsPlayerProps) {
       />
 
       {status === "loading" && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-b from-black/70 to-black/50">
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-gradient-to-b from-black/70 to-black/50">
           <div className="flex max-w-[calc(100%-2rem)] flex-col items-center gap-4 rounded-xl border border-slate-700/50 bg-slate-900/80 px-5 py-5 text-center shadow-2xl backdrop-blur-xl sm:px-8 sm:py-6">
             <Loader2 className="h-6 w-6 animate-spin text-red-500" />
             <p className="text-sm font-medium text-slate-300">{message}</p>

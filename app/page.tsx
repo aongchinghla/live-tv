@@ -306,7 +306,7 @@ export default function HomePage() {
   }
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-slate-950 text-white">
+    <main className="relative min-h-screen overflow-x-hidden bg-slate-950 text-white">
       <div className="pointer-events-none absolute inset-0">
         <DarkVeil
           hueShift={0}
@@ -397,7 +397,7 @@ export default function HomePage() {
             </div>
 
             {/* Channels Grid */}
-            <div className="mt-3 flex-1 overflow-y-auto pr-1">
+            <div className="mt-3 overflow-visible pr-1 lg:flex-1 lg:overflow-y-auto">
               {filteredChannels.length > 0 ? (
                 <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-6">
                   {filteredChannels.map((channel) => (
