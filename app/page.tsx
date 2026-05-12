@@ -290,27 +290,27 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(96,165,250,0.16),transparent_38%),radial-gradient(circle_at_bottom_right,rgba(244,114,182,0.1),transparent_28%),linear-gradient(180deg,rgba(2,6,23,0.1),rgba(2,6,23,0.56))]" />
       </div>
 
-      <section className="relative z-10 mx-auto flex min-h-screen w-full max-w-[1920px] flex-col gap-4 p-4 lg:flex-row lg:gap-5 lg:p-6">
-        <div className="flex min-h-[360px] flex-1 flex-col gap-4 lg:min-h-[calc(100vh-48px)]">
+      <section className="relative z-10 mx-auto flex min-h-screen w-full max-w-[1920px] flex-col gap-3 p-3 sm:gap-4 sm:p-4 lg:flex-row lg:gap-5 lg:p-6">
+        <div className="flex min-h-[320px] flex-1 flex-col gap-3 sm:gap-4 lg:min-h-[calc(100vh-48px)]">
           {/* Header */}
-          <div className="glass rounded-xl px-6 py-4 shadow-2xl">
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex min-w-0 items-center gap-4">
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl">
+          <div className="glass rounded-xl px-4 py-4 shadow-2xl sm:px-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex min-w-0 items-start gap-3 sm:items-center sm:gap-4">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl sm:h-14 sm:w-14">
                   <Image
                     src="/logo.png"
                     alt="LalShaluk TV logo"
                     width={48}
                     height={48}
-                    className="h-12 w-12 object-contain"
+                    className="h-10 w-10 object-contain sm:h-12 sm:w-12"
                     priority
                   />
                 </div>
                 <div className="min-w-0">
-                  <h1 className="truncate text-2xl font-bold tracking-tight">LalShaluk TV</h1>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <p className="truncate text-sm text-slate-400">{selectedChannel.name}</p>
-                    <div className="flex items-center gap-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-1 text-[11px] font-semibold text-emerald-300">
+                  <h1 className="truncate text-xl font-bold tracking-tight sm:text-2xl">LalShaluk TV</h1>
+                  <div className="mt-1 flex flex-col gap-2 sm:mt-0 sm:flex-row sm:flex-wrap sm:items-center">
+                    <p className="min-w-0 truncate text-sm text-slate-400">{selectedChannel.name}</p>
+                    <div className="inline-flex w-fit items-center gap-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-1 text-[11px] font-semibold text-emerald-300">
                       <Users className="h-3.5 w-3.5" />
                       <span>{siteViewerCountLoading ? "Counting..." : `${siteViewerCount} watching now`}</span>
                     </div>
@@ -318,7 +318,7 @@ export default function HomePage() {
                 </div>
               </div>
 
-              <div className="hidden items-center gap-2 rounded-lg bg-white/10 px-4 py-2 text-sm font-semibold text-slate-300 sm:flex">
+              <div className="flex w-full items-center justify-center gap-2 rounded-lg bg-white/10 px-4 py-2 text-sm font-semibold text-slate-300 sm:w-auto">
                 <MonitorPlay className="h-4 w-4 text-red-400" />
                 <span>{channels.length} Channels</span>
               </div>
@@ -326,13 +326,13 @@ export default function HomePage() {
           </div>
 
           {/* Player */}
-          <div className="min-h-[300px] flex-1 rounded-xl overflow-hidden border border-slate-700/50 shadow-2xl lg:min-h-0 glass">
+          <div className="glass min-h-[220px] flex-1 overflow-hidden rounded-xl border border-slate-700/50 shadow-2xl sm:min-h-[280px] lg:min-h-0">
             <HlsPlayer src={selectedChannel.streamUrl} title={selectedChannel.name} />
           </div>
         </div>
 
         {/* Sidebar */}
-        <aside className="w-full rounded-xl border border-slate-700/50 glass p-4 shadow-2xl lg:h-[calc(100vh-48px)] lg:w-[36%] xl:w-[34%] 2xl:w-[32%]">
+        <aside className="glass w-full rounded-xl border border-slate-700/50 p-3 shadow-2xl sm:p-4 lg:h-[calc(100vh-48px)] lg:w-[36%] xl:w-[34%] 2xl:w-[32%]">
           <div className="flex h-full flex-col">
             {/* Categories Header */}
             <div className="flex flex-col gap-3 border-b border-slate-700/40 pb-4">
@@ -341,13 +341,13 @@ export default function HomePage() {
               </div>
 
               {/* Category Buttons */}
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 pt-1">
+              <div className="grid grid-cols-2 gap-2 pt-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3">
                 {categories.map((category) => (
                   <button
                     key={category}
                     type="button"
                     onClick={() => handleCategoryChange(category)}
-                    className={`rounded-md px-3 py-2 text-xs font-semibold transition-all duration-300 ${
+                    className={`min-h-10 rounded-md px-3 py-2 text-xs font-semibold transition-all duration-300 ${
                       activeCategory === category
                         ? "bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg shadow-red-500/30"
                         : "bg-slate-800/50 text-slate-300 hover:bg-slate-700/50 hover:text-slate-100"

@@ -194,7 +194,7 @@ export default function HlsPlayer({ src, title }: HlsPlayerProps) {
   }, [src]);
 
   return (
-    <div className="relative h-full min-h-[260px] w-full overflow-hidden bg-black">
+    <div className="relative aspect-video h-full min-h-[220px] w-full overflow-hidden bg-black sm:min-h-[260px]">
       <video
         ref={videoRef}
         title={title}
@@ -207,7 +207,7 @@ export default function HlsPlayer({ src, title }: HlsPlayerProps) {
 
       {status === "loading" && (
         <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-b from-black/70 to-black/50">
-          <div className="flex flex-col items-center gap-4 rounded-xl bg-slate-900/80 px-8 py-6 backdrop-blur-xl border border-slate-700/50 shadow-2xl">
+          <div className="flex max-w-[calc(100%-2rem)] flex-col items-center gap-4 rounded-xl border border-slate-700/50 bg-slate-900/80 px-5 py-5 text-center shadow-2xl backdrop-blur-xl sm:px-8 sm:py-6">
             <Loader2 className="h-6 w-6 animate-spin text-red-500" />
             <p className="text-sm font-medium text-slate-300">{message}</p>
           </div>
