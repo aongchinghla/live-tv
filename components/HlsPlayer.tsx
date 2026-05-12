@@ -45,7 +45,7 @@ export default function HlsPlayer({ src, title }: HlsPlayerProps) {
     if (!video || !src) return;
 
     let hls: Hls | null = null;
-    let dashPlayer: any = null;
+    let dashPlayer: ReturnType<ReturnType<DashModule["MediaPlayer"]>["create"]> | null = null;
     let cancelled = false;
     const streamType = getStreamType(src);
     const isSecureUrl = src.startsWith("https://");
@@ -61,8 +61,8 @@ export default function HlsPlayer({ src, title }: HlsPlayerProps) {
             ? [proxyUrl, src]
             : [proxyUrl]
           : isSecureUrl
-          ? [src, proxyUrl]
-          : [src];
+            ? [src, proxyUrl]
+            : [src];
     let attemptIndex = 0;
     let attemptTimeoutId: number | null = null;
 
@@ -85,10 +85,7 @@ export default function HlsPlayer({ src, title }: HlsPlayerProps) {
     const markError = (nextMessage?: string) => {
       if (!cancelled) {
         setStatus("error");
-        setMessage(
-          nextMessage ??
-            "This stream could not be loaded. It may be offline, blocked by CORS, region restricted, or unsupported by the source.",
-        );
+        setMessage(nextMessage ?? "This stream could not be loaded.");
       }
     };
 
@@ -145,7 +142,7 @@ export default function HlsPlayer({ src, title }: HlsPlayerProps) {
 
     const startPlayback = (playbackUrl: string) => {
       attemptTimeoutId = window.setTimeout(() => {
-        retryOrFail("This stream is taking too long to start. It may be blocked, offline, or incompatible with the current browser.");
+        retryOrFail("The stream is taking too long to start.");
       }, 8000);
 
       if (streamType === "dash") {
@@ -159,7 +156,7 @@ export default function HlsPlayer({ src, title }: HlsPlayerProps) {
             dashPlayer.on(
               "error",
               () => {
-                retryOrFail("The DASH stream could not be loaded. It may be offline, blocked, expired, or unsupported by the source.");
+                retryOrFail("This DASH stream could not be loaded.");
               },
               undefined,
             );
@@ -172,7 +169,7 @@ export default function HlsPlayer({ src, title }: HlsPlayerProps) {
             );
           })
           .catch(() => {
-            retryOrFail("This DASH stream could not be started in the browser.");
+            retryOrFail("This DASH stream could not start.");
           });
         return;
       }
@@ -192,7 +189,7 @@ export default function HlsPlayer({ src, title }: HlsPlayerProps) {
       }
 
       if (!Hls.isSupported()) {
-        markError("Your browser does not support HLS playback for this stream.");
+        markError("This browser does not support the stream.");
         return;
       }
 
@@ -222,7 +219,7 @@ export default function HlsPlayer({ src, title }: HlsPlayerProps) {
         }
 
         if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
-          retryOrFail("The stream server did not respond. It may be down, blocked, or refusing playback requests.");
+          retryOrFail("The stream server did not respond.");
           return;
         }
 
@@ -278,28 +275,28 @@ export default function HlsPlayer({ src, title }: HlsPlayerProps) {
       )}
 
       {status === "error" && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/55 p-6">
-          <div className="w-full max-w-sm rounded-[22px] border border-white/10 bg-slate-950/72 px-5 py-6 text-center shadow-[0_18px_50px_rgba(0,0,0,0.35)] backdrop-blur-xl">
-            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04]">
-              <AlertTriangle className="h-4.5 w-4.5 text-slate-200" />
+        <div className="absolute inset-0 overflow-y-auto bg-black/55 p-2 sm:flex sm:items-center sm:justify-center sm:p-6">
+          <div className="mx-auto my-2 w-full max-w-[18rem] rounded-[18px] border border-white/10 bg-slate-950/78 px-3.5 py-3.5 text-center shadow-[0_18px_50px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:my-0 sm:max-w-sm sm:px-5 sm:py-6">
+            <div className="mx-auto flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04]">
+              <AlertTriangle className="h-4 w-4 text-slate-200" />
             </div>
 
-            <h2 className="mt-4 text-lg font-semibold tracking-tight text-white sm:text-xl">
+            <h2 className="mt-2.5 text-sm font-semibold tracking-tight text-white sm:mt-4 sm:text-xl">
               Stream unavailable
             </h2>
 
-            <p className="mt-1.5 text-xs text-slate-400">
+            <p className="mt-1 line-clamp-1 text-[10px] text-slate-400 sm:mt-1.5 sm:text-xs">
               {title}
             </p>
 
-            <p className="mt-4 text-sm leading-6 text-slate-300">
+            <p className="mt-2.5 text-[11px] leading-[1.15rem] text-slate-300 sm:mt-4 sm:text-sm sm:leading-6">
               {message}
             </p>
 
-            <div className="mx-auto mt-5 h-px w-12 bg-white/10" />
+            <div className="mx-auto mt-3 h-px w-10 bg-white/10 sm:mt-5 sm:w-12" />
 
-            <p className="mt-5 text-[11px] font-medium uppercase tracking-[0.24em] text-slate-500">
-              Try another channel
+            <p className="mt-3 text-[9px] font-medium uppercase tracking-[0.18em] text-slate-500 sm:mt-5 sm:text-[11px] sm:tracking-[0.24em]">
+              Try another one
             </p>
           </div>
         </div>
