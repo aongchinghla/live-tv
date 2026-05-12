@@ -9,6 +9,16 @@ type HlsPlayerProps = {
   title: string;
 };
 
+type DashModule = {
+  MediaPlayer: () => {
+    create: () => {
+      initialize: (video: HTMLVideoElement, url: string, autoPlay: boolean) => void;
+      on: (event: string, listener: () => void, scope?: unknown) => void;
+      reset: () => void;
+    };
+  };
+};
+
 function getProxyUrl(src: string) {
   return `/api/stream?url=${encodeURIComponent(src)}`;
 }
@@ -104,9 +114,16 @@ export default function HlsPlayer({ src, title }: HlsPlayerProps) {
     video.addEventListener("loadedmetadata", markReady);
     video.addEventListener("error", handleNativeError);
 
+    const loadDashModule = async (): Promise<DashModule> => {
+      // Dash.js 5 exposes ESM by default; using its UMD bundle avoids browser/runtime export parsing issues here.
+      // @ts-expect-error Dash.js does not publish typings for this UMD bundle path.
+      const dashModule = await import("../node_modules/dashjs/dist/modern/umd/dash.all.min.js");
+      return ((dashModule as { default?: DashModule }).default ?? dashModule) as DashModule;
+    };
+
     const startPlayback = (playbackUrl: string) => {
       if (streamType === "dash") {
-        void import("dashjs")
+        void loadDashModule()
           .then((dashjs) => {
             if (cancelled) return;
 

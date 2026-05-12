@@ -197,7 +197,7 @@ export const channels: Channel[] = [
     "name": "News18 Bangla",
     "category": "Bangla",
     "rawCategory": "Bangla",
-    "logo": "https://jio.dinesh29.com.np/smart/ardinesh/logos/news18-bangla-news.png",
+    "logo": "",
     "streamUrl": "https://amg01448-samsungin-news18bangla-samsungin-ad-qy.amagi.tv/playlist/amg01448-samsungin-news18bangla-samsungin/playlist.m3u8",
     "isSecure": true
   },
@@ -997,7 +997,7 @@ export const channels: Channel[] = [
     "name": "BTV News",
     "category": "Bangla",
     "rawCategory": "Bangla",
-    "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4GdTIOJgWg5_BCr3ZDvEzBOMt6gt0QoybcQ&usqp=CAU",
+    "logo": "https://raw.githubusercontent.com/subirkumarpaul/Logo/main/BTV%20National.png",
     "streamUrl": "https://www.btvlive.gov.bd/live/37f2df30-3edf-42f3-a2ee-6185002c841c/BD/d96eb7f4-83c2-4472-9597-3568390a8ebf/index.m3u8",
     "isSecure": true
   },
@@ -1287,7 +1287,7 @@ export const channels: Channel[] = [
     "name": "Bengla Beats",
     "category": "Bangla",
     "rawCategory": "Bangla",
-    "logo": "://tplay.live/originals/bengali-beats/bengali-beats.png",
+    "logo": "",
     "streamUrl": "https://tplay.live/originals/bengali-beats/index.m3u8",
     "isSecure": true
   },
@@ -1607,7 +1607,7 @@ export const channels: Channel[] = [
     "name": "Calcutta News",
     "category": "Bangla",
     "rawCategory": "Bangla",
-    "logo": "https://jio.dinesh29.com.np/smart/ardinesh/logos/calcutta-news.png",
+    "logo": "",
     "streamUrl": "https://akdnetwork.co.in/live/cnnew/index.m3u8",
     "isSecure": true
   },
@@ -1617,7 +1617,7 @@ export const channels: Channel[] = [
     "name": "Kolkata TV",
     "category": "Bangla",
     "rawCategory": "Bangla",
-    "logo": "https://jio.dinesh29.com.np/smart/ardinesh/logos/kolkata-tv.png",
+    "logo": "",
     "streamUrl": "https://cdn.ottlive.co.in/kolkatatv/index.m3u8",
     "isSecure": true
   },
@@ -1627,7 +1627,7 @@ export const channels: Channel[] = [
     "name": "TV9 Bangla",
     "category": "Bangla",
     "rawCategory": "Bangla",
-    "logo": "https://jio.dinesh29.com.np/smart/ardinesh/logos/tv9-bangla.png",
+    "logo": "https://i.postimg.cc/tTNPLBMs/24-Ghanta.jpg",
     "streamUrl": "https://amg01448-samsungin-tv9bangla-samsungin-9lgnh.amagi.tv/playlist/amg01448-samsungin-tv9bangla-samsungin/playlist.m3u8",
     "isSecure": true
   },
@@ -2507,7 +2507,7 @@ export const channels: Channel[] = [
     "name": "Music India",
     "category": "Hindi",
     "rawCategory": "Indian",
-    "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKyMNNb_SRC2dnm7IW84llAJ9aO5Zb7V4jdjHaweOo58tzrc9pSsRv85-TZD1w4L57nc4&usqp=CAU",
+    "logo": "",
     "streamUrl": "http://103.175.73.12:8080/live/158/158_0.m3u8",
     "isSecure": false
   },

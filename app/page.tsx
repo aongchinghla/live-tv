@@ -39,6 +39,36 @@ function getInitials(name: string) {
     .toUpperCase();
 }
 
+const blockedLogoHosts = new Set([
+  "jio.dinesh29.com.np",
+]);
+
+function getSafeLogoUrl(logo?: string) {
+  const value = logo?.trim();
+  if (!value || value.length < 8 || value.startsWith("://")) {
+    return null;
+  }
+
+  try {
+    const parsed = new URL(value);
+    if (!["http:", "https:"].includes(parsed.protocol)) {
+      return null;
+    }
+
+    if (blockedLogoHosts.has(parsed.hostname)) {
+      return null;
+    }
+
+    if (parsed.hostname === "encrypted-tbn0.gstatic.com" && parsed.pathname === "/images") {
+      return null;
+    }
+
+    return parsed.toString();
+  } catch {
+    return null;
+  }
+}
+
 function createSessionId() {
   if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
     return crypto.randomUUID();
@@ -57,6 +87,7 @@ function ChannelTile({
   onSelect: () => void;
 }) {
   const [logoFailed, setLogoFailed] = useState(false);
+  const safeLogo = getSafeLogoUrl(channel.logo);
 
   return (
     <button
@@ -70,9 +101,9 @@ function ChannelTile({
       title={channel.name}
     >
       <div className="flex h-full w-full items-center justify-center bg-white p-2 transition-colors duration-300">
-        {channel.logo && !logoFailed ? (
+        {safeLogo && !logoFailed ? (
           <img
-            src={channel.logo}
+            src={safeLogo}
             alt={channel.name}
             loading="lazy"
             referrerPolicy="no-referrer"
