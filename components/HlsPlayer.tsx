@@ -38,6 +38,7 @@ export default function HlsPlayer({ src, title }: HlsPlayerProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
   const [message, setMessage] = useState("Loading stream...");
+  const [showNativeControls, setShowNativeControls] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -50,10 +51,16 @@ export default function HlsPlayer({ src, title }: HlsPlayerProps) {
     const isSecureUrl = src.startsWith("https://");
     const httpsPage = typeof window !== "undefined" && window.location.protocol === "https:";
     const proxyUrl = getProxyUrl(src);
+    const supportsNativeHls = video.canPlayType("application/vnd.apple.mpegurl") !== "";
+    const shouldPreferProxy = streamType === "dash" || (streamType === "hls" && !supportsNativeHls);
     const attemptUrls =
       httpsPage && !isSecureUrl
         ? [proxyUrl]
-        : isSecureUrl
+        : shouldPreferProxy
+          ? isSecureUrl
+            ? [proxyUrl, src]
+            : [proxyUrl]
+          : isSecureUrl
           ? [src, proxyUrl]
           : [src];
     let attemptIndex = 0;
@@ -61,6 +68,7 @@ export default function HlsPlayer({ src, title }: HlsPlayerProps) {
 
     setStatus("loading");
     setMessage("Loading stream...");
+    setShowNativeControls(false);
 
     const markReady = () => {
       if (attemptTimeoutId) {
@@ -138,7 +146,7 @@ export default function HlsPlayer({ src, title }: HlsPlayerProps) {
     const startPlayback = (playbackUrl: string) => {
       attemptTimeoutId = window.setTimeout(() => {
         retryOrFail("This stream is taking too long to start. It may be blocked, offline, or incompatible with the current browser.");
-      }, 12000);
+      }, 8000);
 
       if (streamType === "dash") {
         void loadDashModule()
@@ -176,7 +184,7 @@ export default function HlsPlayer({ src, title }: HlsPlayerProps) {
         return;
       }
 
-      if (video.canPlayType("application/vnd.apple.mpegurl")) {
+      if (supportsNativeHls) {
         video.src = playbackUrl;
         video.load();
         video.play().catch(() => undefined);
@@ -190,8 +198,11 @@ export default function HlsPlayer({ src, title }: HlsPlayerProps) {
 
       hls = new Hls({
         enableWorker: true,
-        lowLatencyMode: true,
-        backBufferLength: 30,
+        lowLatencyMode: false,
+        backBufferLength: 15,
+        maxBufferLength: 12,
+        maxMaxBufferLength: 20,
+        capLevelToPlayerSize: true,
       });
 
       hls.loadSource(playbackUrl);
@@ -232,16 +243,29 @@ export default function HlsPlayer({ src, title }: HlsPlayerProps) {
     };
   }, [src]);
 
+  const handleRevealControls = () => {
+    if (status !== "ready") return;
+
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.controls = true;
+    setShowNativeControls(true);
+  };
+
   return (
     <div className="relative aspect-video h-full min-h-[220px] w-full overflow-hidden bg-black sm:min-h-[260px]">
       <video
         ref={videoRef}
         title={title}
-        controls
+        controls={showNativeControls}
         autoPlay
         muted
         playsInline
+        preload="metadata"
         className="h-full w-full object-contain"
+        onPointerUp={handleRevealControls}
+        onTouchEnd={handleRevealControls}
       />
 
       {status === "loading" && (

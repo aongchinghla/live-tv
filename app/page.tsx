@@ -1,12 +1,11 @@
 "use client";
 
-import DarkVeil from "@/components/DarkVeil";
 import HlsPlayer from "@/components/HlsPlayer";
 import { channels } from "@/lib/channels";
 import type { Channel } from "@/lib/types";
 import { MonitorPlay, Users, WifiOff } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 
 const preferredCategoryOrder = [
   "All",
@@ -77,14 +76,14 @@ function createSessionId() {
   return `viewer-${Math.random().toString(36).slice(2)}-${Date.now()}`;
 }
 
-function ChannelTile({
+const ChannelTile = memo(function ChannelTile({
   channel,
   isActive,
   onSelect,
 }: {
   channel: Channel;
   isActive: boolean;
-  onSelect: () => void;
+  onSelect: (channel: Channel) => void;
 }) {
   const [logoFailed, setLogoFailed] = useState(false);
   const safeLogo = getSafeLogoUrl(channel.logo);
@@ -92,7 +91,7 @@ function ChannelTile({
   return (
     <button
       type="button"
-      onClick={onSelect}
+      onClick={() => onSelect(channel)}
       className={`group relative aspect-square overflow-hidden rounded-lg border-2 transition-all duration-300 ${
         isActive
           ? "border-red-500 bg-white shadow-xl shadow-red-500/30 scale-105"
@@ -118,7 +117,9 @@ function ChannelTile({
       </div>
     </button>
   );
-}
+}, (previousProps, nextProps) => {
+  return previousProps.channel.id === nextProps.channel.id && previousProps.isActive === nextProps.isActive;
+});
 
 export default function HomePage() {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -305,21 +306,13 @@ export default function HomePage() {
     if (nextChannel) setSelectedChannel(nextChannel);
   }
 
+  function handleChannelSelect(channel: Channel) {
+    setSelectedChannel(channel);
+  }
+
   return (
     <main className="relative min-h-screen overflow-x-hidden bg-slate-950 text-white">
-      <div className="pointer-events-none absolute inset-0">
-        <DarkVeil
-          hueShift={0}
-          noiseIntensity={0.03}
-          scanlineIntensity={0.06}
-          speed={0.55}
-          scanlineFrequency={1.2}
-          warpAmount={0.24}
-          resolutionScale={1}
-          className="h-full w-full opacity-100"
-        />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(96,165,250,0.16),transparent_38%),radial-gradient(circle_at_bottom_right,rgba(244,114,182,0.1),transparent_28%),linear-gradient(180deg,rgba(2,6,23,0.1),rgba(2,6,23,0.56))]" />
-      </div>
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(96,165,250,0.16),transparent_38%),radial-gradient(circle_at_bottom_right,rgba(244,114,182,0.1),transparent_28%),linear-gradient(180deg,rgba(2,6,23,0.1),rgba(2,6,23,0.56))]" />
 
       <section className="relative z-10 mx-auto flex min-h-screen w-full max-w-[1920px] flex-col gap-3 p-3 sm:gap-4 sm:p-4 lg:flex-row lg:gap-5 lg:p-6">
         <div className="flex min-h-[320px] flex-1 flex-col gap-3 sm:gap-4 lg:min-h-[calc(100vh-48px)]">
@@ -397,7 +390,10 @@ export default function HomePage() {
             </div>
 
             {/* Channels Grid */}
-            <div className="mt-3 overflow-visible pr-1 lg:flex-1 lg:overflow-y-auto">
+            <div
+              className="mt-3 overflow-visible pr-1 lg:flex-1 lg:overflow-y-auto"
+              style={{ contentVisibility: "auto", containIntrinsicSize: "1px 960px" }}
+            >
               {filteredChannels.length > 0 ? (
                 <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-6">
                   {filteredChannels.map((channel) => (
@@ -405,7 +401,7 @@ export default function HomePage() {
                       key={`${channel.id}-${channel.slug}`}
                       channel={channel}
                       isActive={selectedChannel.id === channel.id}
-                      onSelect={() => setSelectedChannel(channel)}
+                      onSelect={handleChannelSelect}
                     />
                   ))}
                 </div>
