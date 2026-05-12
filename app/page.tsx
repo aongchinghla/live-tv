@@ -1,5 +1,6 @@
 "use client";
 
+import DarkVeil from "@/components/DarkVeil";
 import HlsPlayer from "@/components/HlsPlayer";
 import { channels } from "@/lib/channels";
 import type { Channel } from "@/lib/types";
@@ -274,7 +275,21 @@ export default function HomePage() {
   }
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950/20 to-slate-950 text-white">
+    <main className="relative min-h-screen overflow-hidden bg-slate-950 text-white">
+      <div className="pointer-events-none absolute inset-0">
+        <DarkVeil
+          hueShift={0}
+          noiseIntensity={0.03}
+          scanlineIntensity={0.06}
+          speed={0.55}
+          scanlineFrequency={1.2}
+          warpAmount={0.24}
+          resolutionScale={1}
+          className="h-full w-full opacity-100"
+        />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(96,165,250,0.16),transparent_38%),radial-gradient(circle_at_bottom_right,rgba(244,114,182,0.1),transparent_28%),linear-gradient(180deg,rgba(2,6,23,0.1),rgba(2,6,23,0.56))]" />
+      </div>
+
       <section className="relative z-10 mx-auto flex min-h-screen w-full max-w-[1920px] flex-col gap-4 p-4 lg:flex-row lg:gap-5 lg:p-6">
         <div className="flex min-h-[360px] flex-1 flex-col gap-4 lg:min-h-[calc(100vh-48px)]">
           {/* Header */}

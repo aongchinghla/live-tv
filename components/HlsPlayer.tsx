@@ -215,15 +215,29 @@ export default function HlsPlayer({ src, title }: HlsPlayerProps) {
       )}
 
       {status === "error" && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-b from-black/80 to-black/60 p-6 text-center">
-          <div className="max-w-md rounded-xl border border-slate-700/50 bg-slate-900/90 p-6 backdrop-blur-xl shadow-2xl">
-            <div className="flex justify-center">
-              <div className="rounded-full bg-red-500/20 p-3">
-                <AlertTriangle className="h-6 w-6 text-red-400" />
-              </div>
+        <div className="absolute inset-0 flex items-center justify-center bg-black/55 p-6">
+          <div className="w-full max-w-sm rounded-[22px] border border-white/10 bg-slate-950/72 px-5 py-6 text-center shadow-[0_18px_50px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04]">
+              <AlertTriangle className="h-4.5 w-4.5 text-slate-200" />
             </div>
-            <h2 className="mt-4 text-lg font-semibold text-white">Stream unavailable</h2>
-            <p className="mt-3 text-sm leading-6 text-slate-400">{message}</p>
+
+            <h2 className="mt-4 text-lg font-semibold tracking-tight text-white sm:text-xl">
+              Stream unavailable
+            </h2>
+
+            <p className="mt-1.5 text-xs text-slate-400">
+              {title}
+            </p>
+
+            <p className="mt-4 text-sm leading-6 text-slate-300">
+              {message}
+            </p>
+
+            <div className="mx-auto mt-5 h-px w-12 bg-white/10" />
+
+            <p className="mt-5 text-[11px] font-medium uppercase tracking-[0.24em] text-slate-500">
+              Try another channel
+            </p>
           </div>
         </div>
       )}
